@@ -4,7 +4,7 @@
     <v-container>
       <!-- Render cards -->
       <v-row>
-        <v-col v-for="item in list" :key="item.name" col="12" sm="4">
+        <v-col v-for="item in showCards" :key="item.name" col="12" sm="4">
           <v-hover v-slot="{ hover }">
             <v-card class="mx-auto" max-width="344" outlined>
               <v-list-item v-if="hover" class="show-on-hover" three-line>
@@ -16,9 +16,7 @@
               <v-list-item v-if="!hover" class="show-default" three-line>
                 <v-list-item-content>
                   <v-list-item-title class="headline mb-1">{{ item.name }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    Greyhound divisely hello coldly fonwderfully
-                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>This is a sample card.</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-list-item-avatar size="80" color="grey"></v-list-item-avatar>
               </v-list-item>
@@ -29,7 +27,13 @@
           </v-hover>
         </v-col>
       </v-row>
-      <v-pagination v-model="page" :length="list.length/3" :total-visible="5" circle></v-pagination>
+      <v-pagination
+        v-model="page"
+        :length="list.length / 3"
+        :total-visible="5"
+        @input="changePage"
+        circle
+      ></v-pagination>
     </v-container>
   </div>
 </template>
@@ -44,13 +48,27 @@ export default Vue.extend({
   mixins: [extensions],
   data: () => ({
     list: [
-      { name: 'one' },
-      { name: 'two' },
-      { name: 'three' },
-      { name: 'four' },
-      { name: 'five' },
-      { name: 'six' },
+      { name: 'One' },
+      { name: 'Two' },
+      { name: 'Three' },
+      { name: 'Four' },
+      { name: 'Five' },
+      { name: 'Six' },
     ],
+    currentPage: 1,
   }),
+  computed: {
+    showCards() {
+      const cardsPerPage = 3;
+      const startIndex = cardsPerPage * (this.currentPage - 1);
+      const shownCards = this.list.slice(startIndex, startIndex + cardsPerPage);
+      return shownCards;
+    },
+  },
+  methods: {
+    changePage(page) {
+      this.currentPage = page;
+    },
+  },
 });
 </script>
