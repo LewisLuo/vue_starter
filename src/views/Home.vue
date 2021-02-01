@@ -46,7 +46,19 @@
           circle
         ></v-pagination>
       </div>
-      <div class="display-list" v-if="displayMode === 'list'"></div>
+      <div class="display-list" v-if="displayMode === 'list'">
+        <v-list three-line>
+          <template v-for="item in cardList">
+            <v-list-item :key="item.name">
+              <v-list-item-avatar><v-img></v-img></v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+                <v-list-item-subtitle></v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </div>
     </v-container>
   </div>
 </template>
