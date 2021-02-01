@@ -36,6 +36,12 @@
             &gt;
           </li>
         </ul>
+        <div class="font-weight-medium">Credit:</div>
+        <span>
+          This site is for personal use. Image and content copyright credit to
+          <a href="bowwowinsurance.com.au">bowwowinsurance.com.au</a>
+          .
+        </span>
       </v-card-text>
       <v-card-actions>
         <v-container class="pa-0 d-flex justify-center" fluid>

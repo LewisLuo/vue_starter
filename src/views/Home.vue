@@ -3,61 +3,83 @@
     <!-- TODO -->
     <v-container>
       <!-- Render page -->
-      <!-- Display switch -->
-      <div class="icon-select d-flex justify-end pr-2 py-4">
-        <v-btn class="mr-2" @click="displayMode = 'card'" fab>
-          <v-icon>mdi-checkerboard</v-icon>
-        </v-btn>
-        <v-btn @click="displayMode = 'list'" fab>
-          <v-icon>mdi-format-list-bulleted</v-icon>
-        </v-btn>
+      <div class="icon-select d-flex justify-space-between pr-2 py-4">
+        <div><h1>20 Popular Dog Breeds</h1></div>
+        <!-- Display switch -->
+        <div>
+          <v-btn class="mr-2" @click="displayMode = 'card'" fab>
+            <v-icon>mdi-checkerboard</v-icon>
+          </v-btn>
+          <v-btn @click="displayMode = 'list'" fab>
+            <v-icon>mdi-format-list-bulleted</v-icon>
+          </v-btn>
+        </div>
       </div>
-      <v-divider class="py-4"></v-divider>
+      <v-divider class="pb-4"></v-divider>
       <!-- Display card-mode -->
       <div class="display-card" v-if="displayMode === 'card'">
         <v-row>
           <v-col v-for="item in showItems" :key="item.name" col="12" sm="4">
             <v-hover v-slot="{ hover }">
-              <v-card class="mx-auto" max-width="344" outlined>
-                <v-list-item v-if="hover" class="show-on-hover" three-line>
+              <v-card class="mx-auto" max-width="500" height="160" outlined>
+                <v-list-item three-line>
                   <v-list-item-content>
                     <v-list-item-title class="headline mb-1">{{ item.title }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item v-if="!hover" class="show-default" three-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="headline mb-1">{{ item.title }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
+                    <v-list-item-subtitle v-if="!hover" class="show-default">
+                      {{ item.personality }}
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle v-if="hover" class="show-on-hover">
+                      <p class="d-flex pt-1 text-wrap">
+                        {{ item.risk }}
+                      </p>
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-avatar size="100" rounded>
                     <v-img :src="item.img"></v-img>
                   </v-list-item-avatar>
                 </v-list-item>
-                <v-card-actions>
-                  <v-btn color="pink" outlined rounded>Petting</v-btn>
-                </v-card-actions>
               </v-card>
             </v-hover>
           </v-col>
         </v-row>
       </div>
       <!-- Display list-mode -->
-      <div class="display-list" v-if="displayMode === 'list'">
-        <v-list three-line>
+      <div class="display-list d-flex justify-center" v-if="displayMode === 'list'">
+        <v-list max-width="800" three-line>
           <template v-for="item in showItems">
-            <v-list-item :key="item.title">
-              <v-list-item-avatar><v-img :src="item.img"></v-img></v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-                <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <div class="d-flex justify-space-between" :key="item.title">
+              <v-list-item :key="item.title">
+                <v-list-item-avatar><v-img :src="item.img"></v-img></v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <div :key="item.risk">
+                <v-dialog v-model="itemDialogOpen" width="500" :retain-focus="false">
+                  <template class="align-self-center" #activator="{ on, attrs }">
+                    <v-btn color="green" dark v-bind="attrs" v-on="on">More</v-btn>
+                  </template>
+                  <v-card outlined>
+                    <v-card-title class="headline grey lighten-2">Health risk:</v-card-title>
+                    <v-card-text class="mt-3">{{ item.risk }}</v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="red lighten-2" dark @click="itemDialogOpen = false">
+                        Close
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </div>
+            </div>
           </template>
         </v-list>
       </div>
       <!-- Pagination -->
       <v-pagination
+        class="pt-2"
         v-if="itemList.length > itemsPerPage"
         v-model="page"
         :length="Math.ceil(itemList.length / itemsPerPage)"
@@ -83,6 +105,7 @@ export default Vue.extend({
     currentPage: 1,
     itemsPerPage: 6,
     displayMode: 'card',
+    itemDialogOpen: false,
   }),
   computed: {
     showItems() {
@@ -94,6 +117,9 @@ export default Vue.extend({
   methods: {
     changePage(page) {
       this.currentPage = page;
+    },
+    closeDialog() {
+      this.itemDialogOpen = false;
     },
   },
 });
