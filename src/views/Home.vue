@@ -3,7 +3,7 @@
     <!-- TODO -->
     <v-container>
       <!-- Render page -->
-      <div class="icon-select d-flex justify-space-between pr-2 py-4">
+      <v-container class="icon-select d-flex justify-space-between pr-2 py-4">
         <div><h1>20 Popular Dog Breeds</h1></div>
         <!-- Display switch -->
         <div>
@@ -14,10 +14,10 @@
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-btn>
         </div>
-      </div>
+      </v-container>
       <v-divider class="pb-4"></v-divider>
       <!-- Display card-mode -->
-      <div class="display-card" v-if="displayMode === 'card'">
+      <v-container class="display-card" v-if="displayMode === 'card'">
         <v-row>
           <v-col v-for="item in showItems" :key="item.name" col="12" sm="4">
             <v-hover v-slot="{ hover }">
@@ -42,12 +42,12 @@
             </v-hover>
           </v-col>
         </v-row>
-      </div>
+      </v-container>
       <!-- Display list-mode -->
-      <div class="display-list d-flex justify-center" v-if="displayMode === 'list'">
+      <v-container class="display-list d-flex justify-center" v-if="displayMode === 'list'">
         <v-list max-width="800" three-line>
           <template v-for="item in showItems">
-            <div class="d-flex justify-space-between" :key="item.title">
+            <v-container class="d-flex justify-space-between" :key="item.title">
               <v-list-item :key="item.title">
                 <v-list-item-avatar><v-img :src="item.img"></v-img></v-list-item-avatar>
                 <v-list-item-content>
@@ -55,9 +55,9 @@
                   <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-              <div :key="item.risk">
+              <div class="align-self-center">
                 <v-dialog v-model="itemDialogOpen" width="500" :retain-focus="false">
-                  <template class="align-self-center" #activator="{ on, attrs }">
+                  <template #activator="{ on, attrs }">
                     <v-btn color="green" dark v-bind="attrs" v-on="on">More</v-btn>
                   </template>
                   <v-card outlined>
@@ -73,10 +73,10 @@
                   </v-card>
                 </v-dialog>
               </div>
-            </div>
+            </v-container>
           </template>
         </v-list>
-      </div>
+      </v-container>
       <!-- Pagination -->
       <v-pagination
         class="pt-2"
