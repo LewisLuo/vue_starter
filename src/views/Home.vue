@@ -4,7 +4,7 @@
     <v-container>
       <!-- Render page -->
       <v-container class="icon-select d-flex justify-space-between pr-2 py-4">
-        <div><h1>20 Popular Dog Breeds</h1></div>
+        <div class="title"><h1>20 Popular Dog Breeds</h1></div>
         <!-- Display switch -->
         <div>
           <v-btn class="mr-2" @click="displayMode = 'card'" fab>
@@ -15,6 +15,16 @@
           </v-btn>
         </div>
       </v-container>
+      <!-- Search function -->
+      <div class="search-bar md-2" max-width="50%">
+        <v-text-field
+          ref="search"
+          v-model="search"
+          hide-details
+          label="輸入品種名"
+          single-line
+        ></v-text-field>
+      </div>
       <v-divider class="pb-4"></v-divider>
       <!-- Display card-mode -->
       <v-container class="display-card" v-if="displayMode === 'card'">
@@ -35,7 +45,7 @@
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-avatar size="100" rounded>
-                    <v-img :src="item.img"></v-img>
+                    <v-img :src="item.img" />
                   </v-list-item-avatar>
                 </v-list-item>
               </v-card>
@@ -63,9 +73,9 @@
                   <v-card outlined>
                     <v-card-title class="headline grey lighten-2">Health risk:</v-card-title>
                     <v-card-text class="mt-3">{{ item.risk }}</v-card-text>
-                    <v-divider></v-divider>
+                    <v-divider />
                     <v-card-actions>
-                      <v-spacer></v-spacer>
+                      <v-spacer />
                       <v-btn color="red lighten-2" dark @click="itemDialogOpen = false">
                         Close
                       </v-btn>
@@ -106,12 +116,15 @@ export default Vue.extend({
     itemsPerPage: 6,
     displayMode: 'card',
     itemDialogOpen: false,
+    search: '',
   }),
   computed: {
     showItems() {
       const startIndex = this.itemsPerPage * (this.currentPage - 1);
       const shownCards = this.itemList.slice(startIndex, startIndex + this.itemsPerPage);
-      return shownCards;
+      const searchInput = this.search.toLowerCase();
+      if (!searchInput) return shownCards;
+      return this.itemList.filter((item) => item.title.toLowerCase().indexOf(searchInput) > -1);
     },
   },
   methods: {
