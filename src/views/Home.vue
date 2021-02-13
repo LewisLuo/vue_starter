@@ -16,20 +16,21 @@
         </div>
       </v-container>
       <!-- Search function -->
-      <div class="search-bar md-2" max-width="50%">
+      <v-container class="search-bar md-2 d-flex">
+        <v-icon class="mr-3">mdi-magnify</v-icon>
         <v-text-field
           ref="search"
           v-model="search"
           hide-details
-          label="輸入品種名"
+          label="輸入關鍵字"
+          @input="currentPage = 1"
           single-line
-        ></v-text-field>
-      </div>
-      <v-divider class="pb-4"></v-divider>
+        />
+      </v-container>
       <!-- Display card-mode -->
       <v-container class="display-card" v-if="displayMode === 'card'">
         <v-row>
-          <v-col v-for="item in showItems" :key="item.name" col="12" sm="4">
+          <v-col v-for="item in showItemsOnPage" :key="item.name" col="12" sm="4">
             <v-hover v-slot="{ hover }">
               <v-card class="mx-auto" max-width="500" height="160" outlined>
                 <v-list-item three-line>
@@ -56,10 +57,10 @@
       <!-- Display list-mode -->
       <v-container class="display-list d-flex justify-center" v-if="displayMode === 'list'">
         <v-list max-width="800" three-line>
-          <template v-for="item in showItems">
+          <template v-for="item in showItemsOnPage">
             <v-container class="d-flex justify-space-between" :key="item.title">
               <v-list-item :key="item.title">
-                <v-list-item-avatar><v-img :src="item.img"></v-img></v-list-item-avatar>
+                <v-list-item-avatar><v-img :src="item.img" /></v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title>{{ item.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ item.personality }}</v-list-item-subtitle>
@@ -90,13 +91,14 @@
       <!-- Pagination -->
       <v-pagination
         class="pt-2"
-        v-if="itemList.length > itemsPerPage"
+        v-if="usedData.length > itemsPerPage"
         v-model="page"
-        :length="Math.ceil(itemList.length / itemsPerPage)"
+        :length="Math.ceil(usedData.length / itemsPerPage)"
         :total-visible="5"
+        :value="currentPage"
         @input="changePage"
         circle
-      ></v-pagination>
+      />
     </v-container>
   </div>
 </template>
@@ -119,12 +121,16 @@ export default Vue.extend({
     search: '',
   }),
   computed: {
-    showItems() {
-      const startIndex = this.itemsPerPage * (this.currentPage - 1);
-      const shownCards = this.itemList.slice(startIndex, startIndex + this.itemsPerPage);
+    usedData() {
+      if (!this.search) return this.itemList;
+
       const searchInput = this.search.toLowerCase();
-      if (!searchInput) return shownCards;
       return this.itemList.filter((item) => item.title.toLowerCase().indexOf(searchInput) > -1);
+    },
+    showItemsOnPage() {
+      const startIndex = this.itemsPerPage * (this.currentPage - 1);
+      const shownCards = this.usedData.slice(startIndex, startIndex + this.itemsPerPage);
+      return shownCards;
     },
   },
   methods: {
